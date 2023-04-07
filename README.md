@@ -14,6 +14,8 @@ N/A
 
 To use the app, simply enter the name of the city you want to search in the left-side search input, and click on the search button. The app will retrieve the weather information for that city from the OpenWeather API and display it on the right panel of the app. You can view the current weather conditions and 5-day weather forecast conditions for the searched city. To quickly access weather information for previously searched cities, simply click on the city in the search history located on the left side of the app.  
 
+<img width="1562" alt="weather_dashboard_ui" src="https://user-images.githubusercontent.com/124637485/230686898-81884a63-84aa-44b4-accd-7c9cb2c4afde.png">
+
 
 ## Credits
 
