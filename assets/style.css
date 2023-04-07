@@ -1,4 +1,3 @@
-
 .weather-search {
     width: 100%;
    padding: 5px 10px;
@@ -11,6 +10,7 @@
 }
 
 #today {
+    display: none;
     border: #333 1px solid;
     border-radius: 5px;
     padding: 20px;
@@ -25,11 +25,28 @@
     color: #FFF;
     font-weight: normal;
     background-color: #465e79;
-    max-width: 18rem;
-    font-size: 16px;
-    padding: 20px;
+    width: auto;
 }
 
 #forecast .card-title {
     font-size: 18px;
+}
+
+#forecast .card-body {
+    padding: 10px;
+}
+
+#history {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#history button {
+    background-color: #898d92;
+    width: 100%;
+    margin-top: 10px;
+    text-transform: capitalize;
+    text-align: center;
 }
