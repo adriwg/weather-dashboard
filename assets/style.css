@@ -16,3 +16,7 @@
     padding: 20px;
     height: 200px;
 }
+
+.city {
+    text-transform: capitalize;
+}
