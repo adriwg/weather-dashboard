@@ -43,7 +43,7 @@ function getWeatherData(data){
     weatherForecastInfo(queryURL_forecast);
 }
 
-// Grab current weather info from server
+// Grab current weather data from server
 function currentWeatherInfo(q_url){
     $.ajax({
         url: q_url,
@@ -51,7 +51,7 @@ function currentWeatherInfo(q_url){
     }).then(currentWeather);
 }
 
-// Grab weather forecast info from server
+// Grab weather forecast data from server
 function weatherForecastInfo(q_url){
     $.ajax({
         url: q_url,
@@ -69,10 +69,15 @@ function currentWeather(data){
     var temp = data.main.temp;
     var humidity = data.main.humidity;
     var wind = data.wind.speed;
-    wind = (wind*3.6).toFixed(1);// convert from m/s to km/h and round to 1 decimal place
+    wind = (wind*3.6).toFixed(2);// convert from m/s to km/h and round to 2 decimal place
     // Display info in HTML
+    displayCurrentWeather(city, today, icn_path, temp, wind, humidity);
+}
+
+// Layout to display current weather
+function displayCurrentWeather(city, date, icn_path, temp, wind, humidity){
     var info = "";
-    info += "<h2><span class=\"city\">"+city+"</span> ("+today+") <img src=\""+icn_path+"\"/></h2>";
+    info += "<h2><span class=\"city\">"+city+"</span> ("+date+") <img src=\""+icn_path+"\"/></h2>";
     info += "<p>Temp: "+temp+"°C</p>";
     info += "<p>Wind: "+wind+" KPH</p>";
     info += "<p>Humidity: "+humidity+"%</p>";
@@ -82,6 +87,12 @@ function currentWeather(data){
 // Display 5-day forecast 
 function weatherForecast(data){
     var weatherInfoList = data.list;// list of 5-day weather info with 3-hr steps
+    // Create a grid layout for the weather forecast
+    var container = $("<div class=\"container\">");
+    var row = $("<div class=\"row row-cols-5\" id=\"row_cards\">");
+    container.append(row);
+    $("#forecast").html(container);
+    
     // To filter daily weather info, as  the data is taking in every 3 hrs, we only pick the weather info at the time 00:00:00
     for (var i = 0; i < 5; i++) {
         var filteredDate_weatherInfo = [];
@@ -89,18 +100,32 @@ function weatherForecast(data){
         filteredDate_weatherInfo = weatherInfoList.filter(function (wi) {
             return wi.dt_txt.includes(date);    
         });
-        console.log(filteredDate_weatherInfo);
         var temp = filteredDate_weatherInfo[0].main.temp;
         var humidity = filteredDate_weatherInfo[0].main.humidity;
         var wind = filteredDate_weatherInfo[0].wind.speed;
-        wind = (wind*3.6).toFixed(1);// convert from m/s to km/h and round to 1 decimal place
+        wind = (wind*3.6).toFixed(2);// convert from m/s to km/h and round to 2 decimal place
         var icn = filteredDate_weatherInfo[0].weather[0].icon;
         var icn_path = baseURL_icn+icn+".png";
-        console.log("Temp: "+temp+"°C, Wind: "+wind+" KPH, Humidity: "+humidity+"%");
-    
+
         // Display info in HTML
-
+        displayWeatherForecast(date, icn_path, temp, wind, humidity);
     }
+}
 
-    
+// Layout to display 5-day weather forecast
+function displayWeatherForecast(date, icn_path, temp, wind, humidity) {
+    var dt = moment(date, "YYYY-MM-DD").format("D/M/YYYY");
+    var info = "";
+    info += "<div class=\"col\">";
+    info += "<div class=\"card mb-3\">";
+    info += "<div class=\"card-body\>";
+    info += "<h5 class=\"card-title\">"+dt+"</h5>";
+    info += "<p><img src=\""+icn_path+"\"/></p>";
+    info += "<p>Temp: "+temp+" °C</p>";
+    info += "<p>Wind: "+wind+" KPH</p>";
+    info += "<p>Humidity: "+humidity+" %</p>";
+    info += "</div>";
+    info += "</div>";
+    info += "</div>";
+    $("#row_cards").append(info);
 }

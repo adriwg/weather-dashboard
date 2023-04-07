@@ -20,3 +20,16 @@
 .city {
     text-transform: capitalize;
 }
+
+#forecast .card {
+    color: #FFF;
+    font-weight: normal;
+    background-color: #465e79;
+    max-width: 18rem;
+    font-size: 16px;
+    padding: 20px;
+}
+
+#forecast .card-title {
+    font-size: 18px;
+}
