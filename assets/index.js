@@ -1,7 +1,7 @@
 var baseURL_weather = "https://api.openweathermap.org/data/2.5/";
-var baseURL_geo ="http://api.openweathermap.org/geo/1.0/direct?";
+var baseURL_geo ="https://api.openweathermap.org/geo/1.0/direct?";
 var apiKey = "d06ddbdb382e974460b03c357ca41e3e";
-var baseURL_icn = "http://openweathermap.org/img/w/";
+var baseURL_icn = "https://openweathermap.org/img/w/";
 var city_name = "";
 var searchHistory = {
     cities: [],
