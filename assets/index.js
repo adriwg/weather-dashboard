@@ -3,7 +3,10 @@ var baseURL_geo ="http://api.openweathermap.org/geo/1.0/direct?";
 var apiKey = "d06ddbdb382e974460b03c357ca41e3e";
 var baseURL_icn = "http://openweathermap.org/img/w/";
 var city_name = "";
-var searchHistory = [];
+var searchHistory = {
+    cities: [],
+    lastSearchCity: ""
+};
 
 $(document).ready(function () {
 
@@ -12,7 +15,8 @@ $(document).ready(function () {
     $("#history").on("click", "button", function () {
         city_name = $(this).attr("data-city");
         geoInfo(city_name);
-        $("#today").show();
+        searchHistory.lastSearchCity=city_name;
+        localStorage.setItem("history",JSON.stringify(searchHistory));
     });
     
 });
@@ -21,18 +25,24 @@ $(document).ready(function () {
 // Check the availability of the local storage at the start up
 function init() {
     if(localStorage.getItem("history") ==null){
-        searchHistory = [];
+        searchHistory = {
+            cities: [],
+            lastSearchCity: ""
+        };
     }else{
         searchHistory = JSON.parse(localStorage.getItem("history"));
         displaySearchHistory();
+        city_name = searchHistory.lastSearchCity;
+        geoInfo(city_name);
+        console.log(city_name);
     }
 }
 
 // Display the search history in HTML
 function displaySearchHistory() {
     $("#history").empty(); // Clear the current dsiplayed history
-    for (var i = 0; i < searchHistory.length; i++) {
-        var history ="<button class=\"btn btn-secondary\" data-city=\""+searchHistory[i]+"\">"+searchHistory[i]+"</button>";
+    for (var i = 0; i < searchHistory.cities.length; i++) {
+        var history ="<button class=\"btn btn-secondary\" data-city=\""+searchHistory.cities[i]+"\">"+searchHistory.cities[i]+"</button>";
         $("#history").append(history);
     }   
 }
@@ -46,11 +56,11 @@ function weatherSearch(event){
         alert("please enter a city name");
     }else{
         geoInfo(city_name);
-        if (!searchHistory.includes(city_name)) {
-            searchHistory.push(city_name);
+        if (!searchHistory.cities.includes(city_name)) {
+            searchHistory.cities.push(city_name);
+            searchHistory.lastSearchCity = city_name;
             displaySearchHistory();
             localStorage.setItem("history",JSON.stringify(searchHistory));// update the local storage
-            $("#today").show();
           }
         $("#search-input").val("");
     }
@@ -117,6 +127,7 @@ function currentWeather(data){
 
 // Layout to display current weather
 function displayCurrentWeather(city, date, icn_path, temp, wind, humidity){
+    $("#today").show();
     var info = "";
     info += "<h2><span class=\"city\">"+city+"</span> ("+date+") <img src=\""+icn_path+"\"/></h2>";
     info += "<p>Temp: "+temp+" °C</p>";
@@ -128,6 +139,7 @@ function displayCurrentWeather(city, date, icn_path, temp, wind, humidity){
 // Display 5-day forecast 
 function weatherForecast(data){
     var weatherInfoList = data.list;// list of 5-day weather info with 3-hr steps
+    var filteredDate_weatherInfo = [];
     // Create a grid layout for the weather forecast
     var container = $("<div class=\"container-fluid\">");
     var title = $("<h5>5-Day Forecast:</h5>");
@@ -137,8 +149,7 @@ function weatherForecast(data){
     
     // To filter daily weather info, as  the data is taking in every 3 hrs, we only pick the weather info at the time 00:00:00
     for (var i = 0; i < 5; i++) {
-        var filteredDate_weatherInfo = [];
-        var date = moment().add(i+1, 'days').format("YYYY-MM-DD");
+        const date = moment().add(i+1, 'days').format("YYYY-MM-DD");
         filteredDate_weatherInfo = weatherInfoList.filter(function (wi) {
             return wi.dt_txt.includes(date);    
         });
